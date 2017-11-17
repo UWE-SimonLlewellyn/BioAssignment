@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 /**
  *
@@ -24,7 +25,7 @@ public class BioAssignment {
     public static void main(String[] args) throws FileNotFoundException, IOException {
         String csv = "";
         // Add the filename either "data1.txt" or "data2.txt"
-        String filename = "data2.txt";
+        String filename = "data3.txt";
 
         // ArrayList of Data objects from the file
         ArrayList<Data> data_set = create_data_set(filename);
@@ -48,7 +49,7 @@ public class BioAssignment {
         printFitness(population);
 
         int generation = 0;
-        while (generation < itteration) {
+        /*  while (generation < itteration) {
             System.out.println("\n\n-------------------------------------------------");
 
             // create offspring using tourniment selection
@@ -93,10 +94,10 @@ public class BioAssignment {
 //            //   printFitness(population);
             System.out.println("Best fitness is " + best.fitness);
             csv += best.fitness + ",";
-        }
-       String gh = "";
-        for(int i = 0; i<best.gene.length;i++){
-        gh+=best.gene[i];
+        }*/
+        String gh = "";
+        for (int i = 0; i < best.gene.length; i++) {
+            gh += best.gene[i];
         }
         System.out.println(gh);
         System.out.println(GA.print_rules(best.rulebase));
@@ -128,7 +129,7 @@ public class BioAssignment {
         while ((line1 = reader.readLine()) != null) {
             String s = "";
             for (int i = 0; i < line1.length(); i++) {
-                if ((line1.charAt(i) == '0') || (line1.charAt(i) == '1')) {
+                if ((line1.charAt(i) != '\n')) {
                     s = s + line1.charAt(i);
                 }
             }
@@ -140,22 +141,27 @@ public class BioAssignment {
     // Read the data from file and passes back array list. 
     public static ArrayList<Data> create_data_set(String filename) throws IOException {
         ArrayList<String> file_array = file_to_string_array(filename);
-        int size_data = file_array.get(0).length() - 1;
-        int k = 0;
         ArrayList<Data> tempA = new ArrayList<>();
-
+        
         for (String a : file_array) {
-            Data temp = new Data(size_data);
-            for (int i = 0; i < size_data; i++) {
-                temp.variables[i] = Character.getNumericValue(a.charAt(i));
+            ArrayList<Float> temp = new ArrayList<>();
+            Scanner scanner = new Scanner(a);
+            scanner.useDelimiter(" ");
+            while (scanner.hasNext()) {             
+                    temp.add(scanner.nextFloat());
             }
-            temp.type = Character.getNumericValue(a.charAt(size_data));
-            tempA.add(temp);
-        }
-        return tempA;
+        
+            Data data_temp = new Data(temp.size() - 1);
+            for (int i = 0; i <= data_temp.Vars - 1; i++) {
+                data_temp.variables[i] = temp.get(i);
+            }
+            data_temp.type = Character.getNumericValue(a.charAt(a.length()-1));
+            tempA.add(data_temp);
     }
+    return tempA ;
+}
 
-    public static boolean matches_cond(int[] data, String[] rule) {
+public static boolean matches_cond(int[] data, String[] rule) {
         for (int i = 0; i < data.length; i++) {
             String s = "" + data[i];  // Changing int[] to String[]
             if ((rule[i].equals(s) != true) && (rule[i].equals("#") != true)) {

@@ -11,18 +11,18 @@ package bioassignment;
  */
 public class Data {
     int Vars; 
-    int[] variables;
+    float[] variables;
     int type;
     
     public Data(int Vars){
         this.Vars = Vars;
-        this.variables = new int[Vars];
+        this.variables = new float[Vars];
     }
     
     @Override
     public  String toString(){
         String s = "";
-        for(int v:variables){
+        for(float v:variables){
             s = s+v;
         }
       return  s+type;

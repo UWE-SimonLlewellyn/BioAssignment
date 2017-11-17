@@ -45,7 +45,7 @@ public class Individual {
         int fitness = 0;
         int k = 0;
 
-         this.rulebase = new Rule[NumR];
+        this.rulebase = new Rule[NumR];
         for (int i = 0; i < NumR; i++) {
             rulebase[i] = new Rule(ConL);
             for (int j = 0; j < ConL; j++) {
