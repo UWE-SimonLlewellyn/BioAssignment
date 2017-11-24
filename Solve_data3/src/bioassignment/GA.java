@@ -59,13 +59,21 @@ public class GA {
     public static Individual[] createPopulation(Individual[] array) {
         ////////////////////////////////////////////////////////////////////////////
         // Create a new array of population 
-        // Set the gene size to of each in the population
-        // populate each gene with 1 and 0
+        // Set gene of ConL of floats followed by a int between 0 or 1
+        int size = array[0].gene.length;
+        int ConL = array[0].ConL;
         for (Individual a : array) {
-            for (int j = 0; j < a.gene.length; j++) {
-                ArrayList<String> operators  = new ArrayList(Arrays.asList("0", "1", "#"));                
-                a.gene[j] = operators.get(new Random().nextInt(2));
-            } // for j              
+            for (int j = 1; j < size+1; j++) {           
+                if((j % (ConL +1)) == 0){
+                    a.gene[j-1] = new Random().nextInt(2);
+                }else{
+                    float d = (float) Math.random();
+                    a.gene[j-1] = d;   
+                }
+            }        
+                      
+             
+                     
             a.create_rulebase(); // Loop through population and convert genes to the to the rulebases 
         } //for i        
         return array;
@@ -203,7 +211,7 @@ public class GA {
         for(Rule r:rules){
             s = s + "Rule "+ count+": ";
             for(int i = 0; i<r.cond.length;i++){
-                s = s + r.cond[i];
+                s = s + r.cond[i] + " ";
             }
             s = s + " = " + r.out + "\n";
             count++;

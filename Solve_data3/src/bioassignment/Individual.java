@@ -13,13 +13,13 @@ public class Individual {
 
     int NumR;
     int ConL;
-    String[] gene;
+    float[] gene;
     int fitness = 0;
     Rule[] rulebase;
 
     // public Individual(){}
     public Individual(int n, int NumR, int ConL) {
-        this.gene = new String[n];
+        this.gene = new float[n];
         this.fitness = 0;
         this.ConL = ConL;
         this.NumR = NumR;
@@ -51,7 +51,7 @@ public class Individual {
             for (int j = 0; j < ConL; j++) {
                 rulebase[i].cond[j] = gene[k++];
             }
-            rulebase[i].out = gene[k++];
+            rulebase[i].out = (int) gene[k++];
         }
 
     }

@@ -31,9 +31,9 @@ public class BioAssignment {
         ArrayList<Data> data_set = create_data_set(filename);
 
         int NumR = 5; // number of rules
-        int ConL = data_set.get(0).Vars; // condition length
+        int ConL = data_set.get(0).Vars * 2; // condition length
         int p_size = 100; // population size - MUST BE AND EVEN NUMBER
-        int itteration = 500; // amoutn of generations 
+        int itteration = 200; // amoutn of generations 
         int gene_size = (ConL + 1) * NumR; // size of gene per solution
         double mute_rate = 0.02;//(1 / ((double) gene_size));
         Individual best = new Individual(gene_size, NumR, ConL); // Store the best solution found
@@ -43,13 +43,15 @@ public class BioAssignment {
         //Created an iniitial population with random genes
         population = GA.createPopulation(population);
 
+ 
+        
         for (Individual pop : population) {
             score_fitness(pop, data_set); // works
         }
         printFitness(population);
 
         int generation = 0;
-        /*  while (generation < itteration) {
+          while (generation < itteration) {
             System.out.println("\n\n-------------------------------------------------");
 
             // create offspring using tourniment selection
@@ -58,24 +60,26 @@ public class BioAssignment {
                 score_fitness(pop, data_set);
             }
             //  System.out.println("Tourn");
-            //   printFitness(offspring);
+//               printFitness(offspring);
 
-//            // Perform crossover
-            offspring = GA.crossover(offspring);
-            for (Individual pop : offspring) {
-                score_fitness(pop, data_set);
-            }
-            //  System.out.println("X-over");
-            //   printFitness(offspring);
+       ////////// Everything up to this works////////////////////////////////////
 
-//          
-            // Perform mutation 
-            offspring = GA.mutation(offspring, mute_rate);
-            for (Individual pop : offspring) {
-                score_fitness(pop, data_set);
-            }
-            //   System.out.println("After Mute");
-            //     printFitness(offspring);
+////            // Perform crossover
+//            offspring = GA.crossover(offspring);
+//            for (Individual pop : offspring) {
+//                score_fitness(pop, data_set);
+//            }
+//            //  System.out.println("X-over");
+//            //   printFitness(offspring);
+
+////          
+//            // Perform mutation 
+//            offspring = GA.mutation(offspring, mute_rate);
+//            for (Individual pop : offspring) {
+//                score_fitness(pop, data_set);
+//            }
+//            //   System.out.println("After Mute");
+//            //     printFitness(offspring);
 
 //            // evaluate
             best = GA.evaluate(offspring, best);
@@ -94,12 +98,12 @@ public class BioAssignment {
 //            //   printFitness(population);
             System.out.println("Best fitness is " + best.fitness);
             csv += best.fitness + ",";
-        }*/
-        String gh = "";
-        for (int i = 0; i < best.gene.length; i++) {
-            gh += best.gene[i];
         }
-        System.out.println(gh);
+//        String gh = "";
+//        for (int i = 0; i < best.gene.length; i++) {
+//            gh += best.gene[i];
+//        }
+//        System.out.println(gh);
         System.out.println(GA.print_rules(best.rulebase));
         System.out.println(csv);
 
@@ -161,15 +165,6 @@ public class BioAssignment {
     return tempA ;
 }
 
-public static boolean matches_cond(int[] data, String[] rule) {
-        for (int i = 0; i < data.length; i++) {
-            String s = "" + data[i];  // Changing int[] to String[]
-            if ((rule[i].equals(s) != true) && (rule[i].equals("#") != true)) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     public static void printFitness(Individual[] array) {
         //Score the fitness by adding all the '1' in the gene
@@ -184,19 +179,33 @@ public static boolean matches_cond(int[] data, String[] rule) {
     }
 
     public static void score_fitness(Individual solution, ArrayList<Data> data) {
-
+        // fit needs needs to score the data value between ranges
+        //E.G. 	DATA =    0.25       0.65       0.96         0.24    = 1
+	//      Rule = (0.1,0.27) (0.5,0.75) (0.18,0.80) (0.01,0.27) = 1
+        // fitness = 4      1    +     1    +    0      +      1     + 1 
+        
         solution.fitness = 0;
         for (int i = 0; i < data.size(); i++) {
             for (Rule rulebase : solution.rulebase) {
                 if (matches_cond(data.get(i).variables, rulebase.cond) == true) {
-                    String s = "" + data.get(i).type;
-                    if (rulebase.out.equals(s) == true) {
+                 //   String s = "" + ;
+                    if (rulebase.out == data.get(i).type) {
                         solution.fitness++;
                     }
                     break; // note it is important to get the next data item after a match
                 }
             }
         }
+    }
+    
+    public static boolean matches_cond(float[] data, float[] rule) {
+        int k = 0;
+        for (int i = 0; i < data.length; i++) {
+            if((rule[k++] < data[i]) && ( rule[k++]>data[i]) ){
+                return false;
+            }
+        }
+        return true;
     }
 
 }

@@ -11,19 +11,19 @@ package bioassignment;
  */
 public class Rule {
 
-    int ConL = 5;
-    String[] cond;
-    String out;
+    int ConL = 5; //hard coded
+    float[] cond;
+    int out;
 
     // change to a new size of condition
     public Rule(int ConL) {
         this.ConL = ConL;
-        this.cond = new String[ConL];
-        this.out = "";
+        this.cond = new float[ConL];
+        this.out = 2;
     }
 
     public Rule() {
-        this.cond = new String[ConL];
-        this.out = "";
+        this.cond = new float[ConL];
+        this.out = 2;
     }
 }
