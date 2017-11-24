@@ -14,12 +14,11 @@ import java.util.Random;
  * @author simon
  */
 public class GA {
-    
-    public GA(){}
-    
-    
-    
-      public static void printFitness(Individual[] array) {
+
+    public GA() {
+    }
+
+    public static void printFitness(Individual[] array) {
         //Score the fitness by adding all the '1' in the gene
         // Print the fitness
         System.out.println("Fitness");
@@ -30,32 +29,31 @@ public class GA {
         }//for i
         System.out.println("\nTotal of all fitness = " + avFitness + "\nAverage fitness = " + (avFitness / array.length) + "\n");
     }
-      
 
-
-    public static String printBitString(String[] array, int x) {
+    public static String printBitString(float[] array, int x) {
         String s = "";
-        for (int i = 0; i < array.length; i++) {
-            if (i == x) {
-                s = s + "^";
+        for (int i = 1; i < array.length + 1; i++) {
+            if (((i % 13) != 0)) {
+                if (i == x + 1) {
+                    s = s + "^";
+                }
+                s = s + array[i - 1] + " ";
+            } else {
+                s = s + "(" + array[i - 1] + ")";
             }
-            s = s + array[i];
         }
         return s;
     }
 
-    
     // Set the creates a new Indiviuale 
     public static Individual[] initiateArray(int p_size, int gene_size, int NumR, int ConL) {
         Individual[] temp = new Individual[p_size];
         for (int i = 0; i < temp.length; i++) {
-            temp[i] = new Individual(gene_size,NumR,ConL);
+            temp[i] = new Individual(gene_size, NumR, ConL);
         } //for i
         return temp;
     }
 
-        
-    
     public static Individual[] createPopulation(Individual[] array) {
         ////////////////////////////////////////////////////////////////////////////
         // Create a new array of population 
@@ -63,22 +61,20 @@ public class GA {
         int size = array[0].gene.length;
         int ConL = array[0].ConL;
         for (Individual a : array) {
-            for (int j = 1; j < size+1; j++) {           
-                if((j % (ConL +1)) == 0){
-                    a.gene[j-1] = new Random().nextInt(2);
-                }else{
+            for (int j = 1; j < size + 1; j++) {
+                if ((j % (ConL + 1)) == 0) {
+                    a.gene[j - 1] = new Random().nextInt(2);
+                } else {
                     float d = (float) Math.random();
-                    a.gene[j-1] = d;   
+                    a.gene[j - 1] = d;
                 }
-            }        
-                      
-             
-                     
+            }
+
             a.create_rulebase(); // Loop through population and convert genes to the to the rulebases 
         } //for i        
         return array;
     }
-   
+
     public static Individual[] tournment(Individual[] original) {
         ///////////////////////////////////////////////////////////////////////////////////////// 
         //Tornement selection
@@ -115,12 +111,10 @@ public class GA {
         Individual[] modified = new Individual[p_size];
 
         for (int i = 0; i < p_size; i += 2) {
-            Individual temp1 = new Individual(gene_size,NumR,ConL);
-            Individual temp2 = new Individual(gene_size,NumR,ConL);
+            Individual temp1 = new Individual(gene_size, NumR, ConL);
+            Individual temp2 = new Individual(gene_size, NumR, ConL);
             int x_point = new Random().nextInt(gene_size);
 
-            
-            
             for (int j = 0; j < x_point; j++) {
                 temp1.gene[j] = original[i].gene[j];
                 temp2.gene[j] = original[i + 1].gene[j];
@@ -130,23 +124,23 @@ public class GA {
                 temp1.gene[j] = original[i + 1].gene[j];
                 temp2.gene[j] = original[i].gene[j];
             }
-            
+
             temp1.create_rulebase();
             temp2.create_rulebase();
             modified[i] = new Individual(temp1);
             modified[i + 1] = new Individual(temp2);
 //            
-//            System.out.println(i + " " + printBitString(original[i].gene,x_point));
+//           System.out.println(i + " " + printBitString(original[i].gene,x_point));
 //            System.out.println(i + " " + printBitString(modified[i].gene,x_point));
 //            
 //            System.out.println((i+1) + " " + printBitString(original[i+1].gene,x_point));
-//            System.out.println((i+1) + " " + printBitString(modified[i+1].gene,x_point));
+//           System.out.println((i+1) + " " + printBitString(modified[i+1].gene,x_point));
 //            System.out.println("");
         }
 
         return modified;
     }
-    
+
     public static Individual[] mutation(Individual[] original, double mute_rate) {
         ///////////////////////////////////////////////////////////////////////////////////
         // Mutation
@@ -155,38 +149,31 @@ public class GA {
         int mutes_per_gene = 0;
         int p_size = original.length; // total number of solutions
         int gene_size = original[0].gene.length; // total lenth of each solotuion
-          
 
         for (int i = 0; i < p_size; i++) { // Loop over each solution in population
 //            System.out.print(i + " ");
 //            System.out.print(printBitString(original[i].gene, 0));
-            for (int j = 0; j < gene_size; j++) { // Loop over each value inthe gene
-                double d = Math.random(); //give number between 0.0 - 1.0
-                if (d < mute_rate) { // in random number < mute_rate change value
-                    ArrayList<String> operators  = new ArrayList(Arrays.asList("0", "1", "#"));
-                    d = Math.random();
-                    for (int k =0; k<operators.size(); k++) {
-                        if(original[i].gene[j].equals(operators.get(k))){
-                            String s = operators.get(k);
-                            operators.remove(k);
-                            int temp;
-                            if(d<0.5) temp = 0;
-                            else temp =1;
-                            original[i].gene[j] = operators.get(new Random().nextInt(2));//operators.get(temp);     
-                            
-                            System.out.print("");
-                            operators.add(s);
-                        }
-                       // break;
+//            System.out.println("");
+            for (int j = 1; j < gene_size + 1; j = j + 2) { // Loop over each value inthe gene
+                if ((j % 13) == 0) {
+                    j++;
+                } else {
+                    double d = Math.random(); //give number between 0.0 - 1.0
+                    if (d < mute_rate) { // in random number < mute_rate change value                    
+                        original[i].gene[j - 1] = (float) 0.0;
+                        original[i].gene[j] = (float) 1.0;
+                        mutes_per_gene++;
                     }
-                    mutes_per_gene++;
                 }
 
             }
+//            System.out.print(i + " ");
+//            System.out.print(printBitString(original[i].gene, 0));
+//            System.out.println("");
 
             original[i].create_rulebase();
         }
-      //  System.out.println("mutes in this population: " + mutes_per_gene);
+        //  System.out.println("mutes in this population: " + mutes_per_gene);
 
         return original;
     }
@@ -203,14 +190,13 @@ public class GA {
         temp = new Individual(best);
         return temp;
     }
- 
-    
-    public static String print_rules(Rule[] rules){
-        String s ="";
+
+    public static String print_rules(Rule[] rules) {
+        String s = "";
         int count = 1;
-        for(Rule r:rules){
-            s = s + "Rule "+ count+": ";
-            for(int i = 0; i<r.cond.length;i++){
+        for (Rule r : rules) {
+            s = s + "Rule " + count + ": ";
+            for (int i = 0; i < r.cond.length; i++) {
                 s = s + r.cond[i] + " ";
             }
             s = s + " = " + r.out + "\n";
@@ -218,5 +204,5 @@ public class GA {
         }
         return s;
     }
-    
+
 }

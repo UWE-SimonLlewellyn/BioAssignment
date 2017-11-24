@@ -30,8 +30,8 @@ public class BioAssignment {
         // ArrayList of Data objects from the file
         ArrayList<Data> data_set = create_data_set(filename);
 
-        int NumR = 5; // number of rules
-        int ConL = data_set.get(0).Vars * 2; // condition length
+        int NumR = 10; // number of rules
+        int ConL = data_set.get(0).Vars * 2; // condition length = each conditon from that data set need two values to indicate a range
         int p_size = 100; // population size - MUST BE AND EVEN NUMBER
         int itteration = 200; // amoutn of generations 
         int gene_size = (ConL + 1) * NumR; // size of gene per solution
@@ -65,19 +65,19 @@ public class BioAssignment {
        ////////// Everything up to this works////////////////////////////////////
 
 ////            // Perform crossover
-//            offspring = GA.crossover(offspring);
-//            for (Individual pop : offspring) {
-//                score_fitness(pop, data_set);
-//            }
+            offspring = GA.crossover(offspring);
+            for (Individual pop : offspring) {
+                score_fitness(pop, data_set);
+            }
 //            //  System.out.println("X-over");
 //            //   printFitness(offspring);
 
 ////          
 //            // Perform mutation 
-//            offspring = GA.mutation(offspring, mute_rate);
-//            for (Individual pop : offspring) {
-//                score_fitness(pop, data_set);
-//            }
+            offspring = GA.mutation(offspring, mute_rate);
+            for (Individual pop : offspring) {
+                score_fitness(pop, data_set);
+            }
 //            //   System.out.println("After Mute");
 //            //     printFitness(offspring);
 
@@ -201,7 +201,7 @@ public class BioAssignment {
     public static boolean matches_cond(float[] data, float[] rule) {
         int k = 0;
         for (int i = 0; i < data.length; i++) {
-            if((rule[k++] < data[i]) && ( rule[k++]>data[i]) ){
+            if((data[i] >= rule[k++]) && (data[i] <= rule[k++]) ){
                 return false;
             }
         }
