@@ -180,15 +180,14 @@ public class GA {
     
         public static void score_fitness(Individual solution, ArrayList<Data> data) {
         // fit needs needs to score the data value between ranges
-        //E.G. 	DATA =    0.25       0.65       0.96         0.24    = 1
+        //E.G. 	DATA =    0.25       0.65       0.6         0.24    = 1
 	//      Rule = (0.1,0.27) (0.5,0.75) (0.18,0.80) (0.01,0.27) = 1
-        // fitness = 4      1    +     1    +    0      +      1     + 1 
+        // fitness =       y    +     y    +      y     +      y     + y = 1 
         
         solution.fitness = 0;
         for (int i = 0; i < data.size(); i++) {
             for (Rule rulebase : solution.rulebase) {
                 if (matches_cond(data.get(i).variables, rulebase.cond) == true) {
-                 //   String s = "" + ;
                     if (rulebase.out == data.get(i).type) {
                         solution.fitness++;
                     }
@@ -200,9 +199,17 @@ public class GA {
         
          public static boolean matches_cond(float[] data, float[] rule) {
         int k = 0;
+
         for (int i = 0; i < data.length; i++) {
-            if((data[i] < rule[k]) || (data[i] > rule[k+1])){
-                return false;
+            
+            if( rule[k] > rule[k+1] ){
+                if((data[i] > rule[k]) || (rule[k+1]>data[i])){
+                    return false;
+                }
+            }else{            
+                if((data[i] < rule[k]) || (rule[k+1]<data[i])){
+                    return false;
+                }
             }
             k+=2;
         }

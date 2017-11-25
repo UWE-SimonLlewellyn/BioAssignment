@@ -44,10 +44,10 @@ public class BioAssignment {
         int NumR = 10; // number of rules
         int ConL = data_set.get(0).Vars * 2; // condition length = each conditon from that data set need two values to indicate a range
         int p_size = 100; // population size - MUST BE A EVEN NUMBER
-        int itteration = 2000; // amoutn of generations 
+        int itteration = 1000; // amoutn of generations 
         int gene_size = (ConL + 1) * NumR; // size of gene per solution
-        double mute_rate = (1 / ((double) gene_size));
-        float mute_size = (float)0.01;
+        double mute_rate = 0.02;//(1 / ((double) gene_size*2));
+        float mute_size = (float)0.1;
         Individual best = new Individual(gene_size, NumR, ConL); // Store the best solution found
         Individual[] population = GA.initiateArray(p_size, gene_size, NumR, ConL);
         Individual[] offspring = GA.initiateArray(p_size, gene_size, NumR, ConL);
@@ -124,7 +124,8 @@ public class BioAssignment {
         GA.score_fitness(best, test_set);
         System.out.println("Tested using " + test_set.size() + " pieces of data");
         System.out.println("Best fitness over test set " + best.fitness );
-        System.out.println("Equals " + (100/test_set.size())*best.fitness + "% accuracy");
+        double percent = ((double)100 /test_set.size())*best.fitness;
+        System.out.format("Equals %.2f%% accuracy",percent);
 
         
     }
