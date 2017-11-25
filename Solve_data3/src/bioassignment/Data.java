@@ -22,7 +22,7 @@ public class Data {
     @Override
     public  String toString(){
         String s = "";
-        for(float v:variables){
+        for(double v:variables){
             s = s+v;
         }
       return  s+type;

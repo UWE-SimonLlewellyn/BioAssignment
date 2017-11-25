@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+
 /**
  *
  * @author simon
@@ -29,13 +30,24 @@ public class BioAssignment {
 
         // ArrayList of Data objects from the file
         ArrayList<Data> data_set = create_data_set(filename);
+        ArrayList<Data> training_set = new ArrayList<>();
+        ArrayList<Data> test_set = new ArrayList<>();
+        
+        // Create both training and test set
+        for(Data t:data_set){
+            double d = Math.random();
+            if(d<0.75) training_set.add(t);
+            else test_set.add(t);
+        }
+        
 
         int NumR = 10; // number of rules
         int ConL = data_set.get(0).Vars * 2; // condition length = each conditon from that data set need two values to indicate a range
         int p_size = 100; // population size - MUST BE A EVEN NUMBER
-        int itteration = 500; // amoutn of generations 
+        int itteration = 2000; // amoutn of generations 
         int gene_size = (ConL + 1) * NumR; // size of gene per solution
-        double mute_rate = (1 / ((double) gene_size/2));
+        double mute_rate = (1 / ((double) gene_size));
+        float mute_size = (float)0.01;
         Individual best = new Individual(gene_size, NumR, ConL); // Store the best solution found
         Individual[] population = GA.initiateArray(p_size, gene_size, NumR, ConL);
         Individual[] offspring = GA.initiateArray(p_size, gene_size, NumR, ConL);
@@ -46,7 +58,7 @@ public class BioAssignment {
  
         
         for (Individual pop : population) {
-            score_fitness(pop, data_set); // works
+            GA.score_fitness(pop, training_set); // works
         }
         printFitness(population);
 
@@ -57,7 +69,7 @@ public class BioAssignment {
             // create offspring using tourniment selection
             offspring = GA.tournment(population);
             for (Individual pop : offspring) {
-                score_fitness(pop, data_set);
+                GA.score_fitness(pop, training_set);
             }
             //  System.out.println("Tourn");
 //               printFitness(offspring);
@@ -67,16 +79,16 @@ public class BioAssignment {
 ////            // Perform crossover
             offspring = GA.crossover(offspring);
             for (Individual pop : offspring) {
-                score_fitness(pop, data_set);
+                GA.score_fitness(pop, training_set);
             }
 //            //  System.out.println("X-over");
 //            //   printFitness(offspring);
 
 ////          
 //            // Perform mutation 
-            offspring = GA.mutation(offspring, mute_rate);
+            offspring = GA.mutation(offspring, mute_rate, mute_size);
             for (Individual pop : offspring) {
-                score_fitness(pop, data_set);
+                GA.score_fitness(pop, training_set);
             }
 //            //   System.out.println("After Mute");
 //            //     printFitness(offspring);
@@ -89,7 +101,7 @@ public class BioAssignment {
             }
             // Loop through population and convert genes to the to the rulebases
             for (Individual pop : population) {
-                score_fitness(pop, data_set);
+                GA.score_fitness(pop, training_set);
             }
 //
 
@@ -104,10 +116,17 @@ public class BioAssignment {
 //            gh += best.gene[i];
 //        }
 //        System.out.println(gh);
-        System.out.println("Best fitness is " + best.fitness);
+        System.out.println("Trained using " + training_set.size() + " sets of data");
+        System.out.println("Best fitness using training set " + best.fitness);        
         System.out.println(GA.print_rules(best.rulebase));
         System.out.println(csv);
 
+        GA.score_fitness(best, test_set);
+        System.out.println("Tested using " + test_set.size() + " pieces of data");
+        System.out.println("Best fitness over test set " + best.fitness );
+        System.out.println("Equals " + (100/test_set.size())*best.fitness + "% accuracy");
+
+        
     }
 
     public static String file_to_string(String filename) throws FileNotFoundException, IOException {
@@ -179,34 +198,8 @@ public class BioAssignment {
         System.out.println("\nTotal of all fitness = " + avFitness + "\nAverage fitness = " + (avFitness / array.length) + "\n");
     }
 
-    public static void score_fitness(Individual solution, ArrayList<Data> data) {
-        // fit needs needs to score the data value between ranges
-        //E.G. 	DATA =    0.25       0.65       0.96         0.24    = 1
-	//      Rule = (0.1,0.27) (0.5,0.75) (0.18,0.80) (0.01,0.27) = 1
-        // fitness = 4      1    +     1    +    0      +      1     + 1 
-        
-        solution.fitness = 0;
-        for (int i = 0; i < data.size(); i++) {
-            for (Rule rulebase : solution.rulebase) {
-                if (matches_cond(data.get(i).variables, rulebase.cond) == true) {
-                 //   String s = "" + ;
-                    if (rulebase.out == data.get(i).type) {
-                        solution.fitness++;
-                    }
-                    break; // note it is important to get the next data item after a match
-                }
-            }
-        }
-    }
+
     
-    public static boolean matches_cond(float[] data, float[] rule) {
-        int k = 0;
-        for (int i = 0; i < data.length; i++) {
-            if((data[i] >= rule[k++]) && (data[i] <= rule[k++]) ){
-                return false;
-            }
-        }
-        return true;
-    }
+   
 
 }

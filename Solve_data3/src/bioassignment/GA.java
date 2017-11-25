@@ -141,7 +141,7 @@ public class GA {
         return modified;
     }
 
-    public static Individual[] mutation(Individual[] original, double mute_rate) {
+    public static Individual[] mutation(Individual[] original, double mute_rate, float mute_size) {
         ///////////////////////////////////////////////////////////////////////////////////
         // Mutation
         // go through the offspring population
@@ -149,14 +149,10 @@ public class GA {
         int mutes_per_gene = 0;
         int p_size = original.length; // total number of solutions
         int gene_size = original[0].gene.length; // total lenth of each solotuion
-        float mute_size = (float)0.01;
+
 
         for (int i = 0; i < p_size; i++) { // Loop over each solution in population
-//            System.out.print(i + " ");
-//            System.out.print(printBitString(original[i].gene, 0));
-//            System.out.println("");
             for (int j = 1; j < gene_size + 1; j++) { // Loop over each value inthe gene
-
                 double d = Math.random(); //give number between 0.0 - 1.0
                 if (d < mute_rate) { // in random number < mute_rate change value   
                     if ((j % 13) == 0) {                        
@@ -167,27 +163,50 @@ public class GA {
                         }
                     } else {
                         int operand_selection = new Random().nextInt(2);
-
                         if (operand_selection == 0) {
                             original[i].gene[j - 1] += mute_size ;
                         } else {
                             original[i].gene[j - 1] -= mute_size;
                         }
-
                         mutes_per_gene++;
                     }
                 }
-
             }
-//            System.out.print(i + " ");
-//            System.out.print(printBitString(original[i].gene, 0));
-//            System.out.println("");
-
             original[i].create_rulebase();
         }
         //  System.out.println("mutes in this population: " + mutes_per_gene);
-
         return original;
+    }
+    
+        public static void score_fitness(Individual solution, ArrayList<Data> data) {
+        // fit needs needs to score the data value between ranges
+        //E.G. 	DATA =    0.25       0.65       0.96         0.24    = 1
+	//      Rule = (0.1,0.27) (0.5,0.75) (0.18,0.80) (0.01,0.27) = 1
+        // fitness = 4      1    +     1    +    0      +      1     + 1 
+        
+        solution.fitness = 0;
+        for (int i = 0; i < data.size(); i++) {
+            for (Rule rulebase : solution.rulebase) {
+                if (matches_cond(data.get(i).variables, rulebase.cond) == true) {
+                 //   String s = "" + ;
+                    if (rulebase.out == data.get(i).type) {
+                        solution.fitness++;
+                    }
+                    break; // note it is important to get the next data item after a match
+                }
+            }
+        }
+    }
+        
+         public static boolean matches_cond(float[] data, float[] rule) {
+        int k = 0;
+        for (int i = 0; i < data.length; i++) {
+            if((data[i] < rule[k]) || (data[i] > rule[k+1])){
+                return false;
+            }
+            k+=2;
+        }
+        return true;
     }
 
     public static Individual evaluate(Individual[] array, Individual best) {
