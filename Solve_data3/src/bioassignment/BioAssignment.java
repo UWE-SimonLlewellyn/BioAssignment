@@ -48,21 +48,24 @@ public class BioAssignment {
         int gene_size = (ConL + 1) * NumR; // size of gene per solution
         double mute_rate = 0.02;//(1 / ((double) gene_size*2));
         float mute_size = (float) 0.1;
-        Individual best = new Individual(gene_size, NumR, ConL); // Store the best solution found
+       
         Individual global_best = new Individual(gene_size, NumR, ConL); // Store the best solution found
         Individual[] population = GA.initiateArray(p_size, gene_size, NumR, ConL);
         Individual[] offspring = GA.initiateArray(p_size, gene_size, NumR, ConL);
 
         int index = 0;
-        int multiGA = 1;
+        int multiGA = 10; // controlls how many differnt GA to run.
+        
+        
         while (index < multiGA) {
+            Individual best = new Individual(gene_size, NumR, ConL); // Store the best solution found
             //Created an iniitial population with random genes
             population = GA.createPopulation(population);
 
             for (Individual pop : population) {
                 GA.score_fitness(pop, training_set); // works
             }
-            //  printFitness(population);
+
 
             int generation = 0;
             while (generation < itteration) {
@@ -101,6 +104,7 @@ public class BioAssignment {
                 csv += best.fitness + ",";
             }
             csv +=  "\n";
+            System.out.println("");
             index++;
             if (best.fitness > global_best.fitness) {
                 global_best = new Individual(best);
@@ -108,8 +112,9 @@ public class BioAssignment {
         }
 
         System.out.println("Trained using " + training_set.size() + " sets of data");
-        System.out.println("Best fitness using training set " + best.fitness);
+        System.out.println("Best fitness using training set " + global_best.fitness);
         System.out.println(GA.print_rules(global_best.rulebase));
+        System.out.println(GA.printRulesBitString(global_best.rulebase));
         System.out.println(csv);
         double percent_training = ((double) 100 / training_set.size()) * global_best.fitness;
 

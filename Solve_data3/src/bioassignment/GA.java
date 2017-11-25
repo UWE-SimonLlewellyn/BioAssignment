@@ -6,7 +6,6 @@
 package bioassignment;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -30,18 +29,34 @@ public class GA {
         System.out.println("\nTotal of all fitness = " + avFitness + "\nAverage fitness = " + (avFitness / array.length) + "\n");
     }
 
-    public static String printBitString(float[] array, int x) {
-        String s = "";
-        for (int i = 1; i < array.length + 1; i++) {
-            if (((i % 13) != 0)) {
-                if (i == x + 1) {
-                    s = s + "^";
+    public static String printRulesBitString(Rule[] temp) {
+       String s ="";
+        for (int i = 0; i<temp.length;i++){
+            s += "Rule " + (i+1) + ": ";
+            for(int j=0; j<temp[i].cond.length;j++){
+                float a = temp[i].cond[j], b = temp[i].cond[++j];
+                
+                if( a < b){
+                    if(a >= 0.4){
+                        s += "1";
+                    }else if(b<=0.6){
+                        s += "0";
+                    }else{
+                        s += "#";
+                    }
+                }else{
+                    if(b >= 0.4){
+                        s += "1";
+                    }else if(a<=0.6){
+                        s += "0";
+                    }else{
+                        s += "#";
+                    }
                 }
-                s = s + array[i - 1] + " ";
-            } else {
-                s = s + "(" + array[i - 1] + ")";
             }
+            s += " = "+ temp[i].out + "\n";
         }
+        
         return s;
     }
 
@@ -69,7 +84,6 @@ public class GA {
                     a.gene[j - 1] = d;
                 }
             }
-
             a.create_rulebase(); // Loop through population and convert genes to the to the rulebases 
         } //for i        
         return array;
@@ -90,7 +104,6 @@ public class GA {
                 temp[i] = new Individual(original[parent1]);
             } else {
                 temp[i] = new Individual(original[parent2]);
-
             }
         }
         return temp;
@@ -129,13 +142,7 @@ public class GA {
             temp2.create_rulebase();
             modified[i] = new Individual(temp1);
             modified[i + 1] = new Individual(temp2);
-//            
-//           System.out.println(i + " " + printBitString(original[i].gene,x_point));
-//            System.out.println(i + " " + printBitString(modified[i].gene,x_point));
-//            
-//            System.out.println((i+1) + " " + printBitString(original[i+1].gene,x_point));
-//           System.out.println((i+1) + " " + printBitString(modified[i+1].gene,x_point));
-//            System.out.println("");
+
         }
 
         return modified;
@@ -145,8 +152,7 @@ public class GA {
         ///////////////////////////////////////////////////////////////////////////////////
         // Mutation
         // go through the offspring population
-        // mutate the bit at a mutation rate of 1/gene_size
-        int mutes_per_gene = 0;
+        // mutate the bit at a mutation rate of 1/gene_size        
         int p_size = original.length; // total number of solutions
         int gene_size = original[0].gene.length; // total lenth of each solotuion
 
@@ -165,10 +171,13 @@ public class GA {
                         int operand_selection = new Random().nextInt(2);
                         if (operand_selection == 0) {
                             original[i].gene[j - 1] += mute_size ;
+                            if(original[i].gene[j - 1] > 1.0) 
+                                original[i].gene[j - 1] = (float)1.0;
                         } else {
                             original[i].gene[j - 1] -= mute_size;
+                            if(original[i].gene[j - 1] < 0.0) 
+                                original[i].gene[j - 1] = (float)0.0;
                         }
-                        mutes_per_gene++;
                     }
                 }
             }
@@ -182,8 +191,7 @@ public class GA {
         // fit needs needs to score the data value between ranges
         //E.G. 	DATA =    0.25       0.65       0.6         0.24    = 1
 	//      Rule = (0.1,0.27) (0.5,0.75) (0.18,0.80) (0.01,0.27) = 1
-        // fitness =       y    +     y    +      y     +      y     + y = 1 
-        
+        // fitness =       y    +     y    +      y     +      y     + y = 1         
         solution.fitness = 0;
         for (int i = 0; i < data.size(); i++) {
             for (Rule rulebase : solution.rulebase) {
@@ -199,9 +207,7 @@ public class GA {
         
     public static boolean matches_cond(float[] data, float[] rule) {
         int k = 0;
-
-        for (int i = 0; i < data.length; i++) {
-            
+        for (int i = 0; i < data.length; i++) {            
             if( rule[k] > rule[k+1] ){
                 if((data[i] > rule[k]) || (rule[k+1]>data[i])){
                     return false;
@@ -218,7 +224,6 @@ public class GA {
 
     public static Individual evaluate(Individual[] array, Individual best) {
         // Compares each solution in the offspring population to the fittest found
-
         Individual temp;
         for (Individual array1 : array) {
             if (array1.fitness > best.fitness) {
