@@ -154,14 +154,25 @@ public class GA {
 //            System.out.print(i + " ");
 //            System.out.print(printBitString(original[i].gene, 0));
 //            System.out.println("");
-            for (int j = 1; j < gene_size + 1; j = j + 2) { // Loop over each value inthe gene
-                if ((j % 13) == 0) {
-                    j++;
-                } else {
-                    double d = Math.random(); //give number between 0.0 - 1.0
-                    if (d < mute_rate) { // in random number < mute_rate change value                    
-                        original[i].gene[j - 1] = (float) 0.0;
-                        original[i].gene[j] = (float) 1.0;
+            for (int j = 1; j < gene_size + 1; j++) { // Loop over each value inthe gene
+
+                double d = Math.random(); //give number between 0.0 - 1.0
+                if (d < mute_rate) { // in random number < mute_rate change value   
+                    if ((j % 13) == 0) {                        
+                        if (original[i].gene[j - 1] == (float)0.0) {
+                            original[i].gene[j - 1] = (float)1.0;
+                        } else {
+                            original[i].gene[j - 1] = (float)0.0;
+                        }
+                    } else {
+                        int operand_selection = new Random().nextInt(2);
+
+                        if (operand_selection == 0) {
+                            original[i].gene[j - 1] += (float) 0.01;
+                        } else {
+                            original[i].gene[j - 1] -= (float) 0.01;
+                        }
+
                         mutes_per_gene++;
                     }
                 }
@@ -197,7 +208,7 @@ public class GA {
         for (Rule r : rules) {
             s = s + "Rule " + count + ": ";
             for (int i = 0; i < r.cond.length; i++) {
-                s = s + r.cond[i] + " ";
+                s = s + "("+ r.cond[i] + " , " + r.cond[i++] + ")  ";
             }
             s = s + " = " + r.out + "\n";
             count++;

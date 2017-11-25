@@ -32,10 +32,10 @@ public class BioAssignment {
 
         int NumR = 10; // number of rules
         int ConL = data_set.get(0).Vars * 2; // condition length = each conditon from that data set need two values to indicate a range
-        int p_size = 100; // population size - MUST BE AND EVEN NUMBER
-        int itteration = 200; // amoutn of generations 
+        int p_size = 100; // population size - MUST BE A EVEN NUMBER
+        int itteration = 500; // amoutn of generations 
         int gene_size = (ConL + 1) * NumR; // size of gene per solution
-        double mute_rate = 0.02;//(1 / ((double) gene_size));
+        double mute_rate = (1 / ((double) gene_size));
         Individual best = new Individual(gene_size, NumR, ConL); // Store the best solution found
         Individual[] population = GA.initiateArray(p_size, gene_size, NumR, ConL);
         Individual[] offspring = GA.initiateArray(p_size, gene_size, NumR, ConL);
@@ -52,7 +52,7 @@ public class BioAssignment {
 
         int generation = 0;
           while (generation < itteration) {
-            System.out.println("\n\n-------------------------------------------------");
+            // System.out.println("\n\n-------------------------------------------------");
 
             // create offspring using tourniment selection
             offspring = GA.tournment(population);
@@ -94,9 +94,9 @@ public class BioAssignment {
 //
 
             generation++;
-            System.out.println("Generation: " + generation);
-//            //   printFitness(population);
-            System.out.println("Best fitness is " + best.fitness);
+//            System.out.println("Generation: " + generation);
+////            //   printFitness(population);
+//            System.out.println("Best fitness is " + best.fitness);
             csv += best.fitness + ",";
         }
 //        String gh = "";
