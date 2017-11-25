@@ -35,7 +35,7 @@ public class BioAssignment {
         int p_size = 100; // population size - MUST BE A EVEN NUMBER
         int itteration = 500; // amoutn of generations 
         int gene_size = (ConL + 1) * NumR; // size of gene per solution
-        double mute_rate = (1 / ((double) gene_size));
+        double mute_rate = (1 / ((double) gene_size/2));
         Individual best = new Individual(gene_size, NumR, ConL); // Store the best solution found
         Individual[] population = GA.initiateArray(p_size, gene_size, NumR, ConL);
         Individual[] offspring = GA.initiateArray(p_size, gene_size, NumR, ConL);
@@ -95,7 +95,7 @@ public class BioAssignment {
 
             generation++;
 //            System.out.println("Generation: " + generation);
-////            //   printFitness(population);
+//            //   printFitness(population);
 //            System.out.println("Best fitness is " + best.fitness);
             csv += best.fitness + ",";
         }
@@ -104,6 +104,7 @@ public class BioAssignment {
 //            gh += best.gene[i];
 //        }
 //        System.out.println(gh);
+        System.out.println("Best fitness is " + best.fitness);
         System.out.println(GA.print_rules(best.rulebase));
         System.out.println(csv);
 

@@ -149,6 +149,7 @@ public class GA {
         int mutes_per_gene = 0;
         int p_size = original.length; // total number of solutions
         int gene_size = original[0].gene.length; // total lenth of each solotuion
+        float mute_size = (float)0.01;
 
         for (int i = 0; i < p_size; i++) { // Loop over each solution in population
 //            System.out.print(i + " ");
@@ -168,9 +169,9 @@ public class GA {
                         int operand_selection = new Random().nextInt(2);
 
                         if (operand_selection == 0) {
-                            original[i].gene[j - 1] += (float) 0.01;
+                            original[i].gene[j - 1] += mute_size ;
                         } else {
-                            original[i].gene[j - 1] -= (float) 0.01;
+                            original[i].gene[j - 1] -= mute_size;
                         }
 
                         mutes_per_gene++;
@@ -208,7 +209,7 @@ public class GA {
         for (Rule r : rules) {
             s = s + "Rule " + count + ": ";
             for (int i = 0; i < r.cond.length; i++) {
-                s = s + "("+ r.cond[i] + " , " + r.cond[i++] + ")  ";
+                s = s + "("+ r.cond[i++] + " , " + r.cond[i] + ")  ";
             }
             s = s + " = " + r.out + "\n";
             count++;
