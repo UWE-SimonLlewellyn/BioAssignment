@@ -17,25 +17,12 @@ public class GA {
     public GA() {
     }
 
-    public static void printFitness(Individual[] array) {
-        //Score the fitness by adding all the '1' in the gene
-        // Print the fitness
-        System.out.println("Fitness");
-        int avFitness = 0;
-        for (int i = 0; i < array.length; i++) {
-            System.out.print(array[i].fitness + " ");
-            avFitness = avFitness + array[i].fitness;
-        }//for i
-        System.out.println("\nTotal of all fitness = " + avFitness + "\nAverage fitness = " + (avFitness / array.length) + "\n");
-    }
-
     public static String printRulesBitString(Rule[] temp) {
        String s ="";
         for (int i = 0; i<temp.length;i++){
             s += "Rule " + (i+1) + ": ";
             for(int j=0; j<temp[i].cond.length;j++){
-                float a = temp[i].cond[j], b = temp[i].cond[++j];
-                
+                float a = temp[i].cond[j], b = temp[i].cond[++j];                
                 if( a < b){
                     if(a >= 0.4){
                         s += "1";
@@ -55,8 +42,7 @@ public class GA {
                 }
             }
             s += " = "+ temp[i].out + "\n";
-        }
-        
+        }        
         return s;
     }
 
@@ -137,14 +123,12 @@ public class GA {
                 temp1.gene[j] = original[i + 1].gene[j];
                 temp2.gene[j] = original[i].gene[j];
             }
-
+            
             temp1.create_rulebase();
             temp2.create_rulebase();
             modified[i] = new Individual(temp1);
             modified[i + 1] = new Individual(temp2);
-
         }
-
         return modified;
     }
 
@@ -155,7 +139,6 @@ public class GA {
         // mutate the bit at a mutation rate of 1/gene_size        
         int p_size = original.length; // total number of solutions
         int gene_size = original[0].gene.length; // total lenth of each solotuion
-
 
         for (int i = 0; i < p_size; i++) { // Loop over each solution in population
             for (int j = 1; j < gene_size + 1; j++) { // Loop over each value inthe gene
@@ -183,15 +166,14 @@ public class GA {
             }
             original[i].create_rulebase();
         }
-//         System.out.println("mutes in this population: " + mutes_per_gene);
         return original;
     }
     
-        public static void score_fitness(Individual solution, ArrayList<Data> data) {
-        // fit needs needs to score the data value between ranges
-        //E.G. 	DATA =    0.25       0.65       0.6         0.24    = 1
-	//      Rule = (0.1,0.27) (0.5,0.75) (0.18,0.80) (0.01,0.27) = 1
-        // fitness =       y    +     y    +      y     +      y     + y = 1         
+    public static void score_fitness(Individual solution, ArrayList<Data> data) {
+    // fit needs needs to score the data value between ranges
+    //E.G. 	DATA =    0.25       0.65       0.6         0.24    = 1
+    //      Rule = (0.1,0.27) (0.5,0.75) (0.18,0.80) (0.01,0.27) = 1
+    // fitness =       y    +     y    +      y     +      y     + y = 1         
         solution.fitness = 0;
         for (int i = 0; i < data.size(); i++) {
             for (Rule rulebase : solution.rulebase) {

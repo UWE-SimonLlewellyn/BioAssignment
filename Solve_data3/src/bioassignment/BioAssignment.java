@@ -26,12 +26,12 @@ public class BioAssignment {
         String csv = "";
         String filename = "data3.txt";
 
-        // ArrayList of Data objects from the file
+        // ArrayList of Data objects to hold the input data
         ArrayList<Data> data_set = create_data_set(filename);
         ArrayList<Data> training_set = new ArrayList<>();
         ArrayList<Data> test_set = new ArrayList<>();
 
-        // Create both training and test set
+        // Splits input file in training and test sets
         for (Data t : data_set) {
             double d = Math.random();
             if (d < 0.75) {
@@ -41,10 +41,12 @@ public class BioAssignment {
             }
         }
 
+        // Settings for running the GA 
         int NumR = 5; // number of rules
         int ConL = data_set.get(0).Vars * 2; // condition length = each conditon from that data set need two values to indicate a range
         int p_size = 100; // population size - MUST BE A EVEN NUMBER
         int itteration = 1000; // amoutn of generations 
+        int multiGA = 20; // controlls how many differnt GA to run.
         int gene_size = (ConL + 1) * NumR; // size of gene per solution
         double mute_rate = 0.02;//(1 / ((double) gene_size*2));
         float mute_size = (float) 0.1;
@@ -54,18 +56,14 @@ public class BioAssignment {
         Individual[] offspring = GA.initiateArray(p_size, gene_size, NumR, ConL);
 
         int index = 0;
-        int multiGA = 10; // controlls how many differnt GA to run.
-        
-        
-        while (index < multiGA) {
+        while (index < multiGA) { // Start if loop that allow multple GAs to run sequentially 
             Individual best = new Individual(gene_size, NumR, ConL); // Store the best solution found
-            //Created an iniitial population with random genes
+            
+            //Created an iniitial population with random genes and score
             population = GA.createPopulation(population);
-
             for (Individual pop : population) {
                 GA.score_fitness(pop, training_set); // works
             }
-
 
             int generation = 0;
             while (generation < itteration) {
@@ -91,55 +89,37 @@ public class BioAssignment {
                 // evaluate
                 best = GA.evaluate(offspring, best);
 
+                // Replace population with offspring and score
                 for (int i = 0; i < p_size; i++) {
                     population[i] = new Individual(offspring[i]);
-                }
-                // Loop through population and convert genes to the to the rulebases
-                for (Individual pop : population) {
-                    GA.score_fitness(pop, training_set);
-                }
-                //
+                }     
 
                 generation++;
                 csv += best.fitness + ",";
             }
-            csv +=  "\n";
-            System.out.println("");
+            csv +=  "\n\n"; 
+
             index++;
+            //check completed GA's best solution and compare with the previous GA
             if (best.fitness > global_best.fitness) {
                 global_best = new Individual(best);
             }
         }
 
+        // Prints to show the rsults of the GAs
         System.out.println("Trained using " + training_set.size() + " sets of data");
-        System.out.println("Best fitness using training set " + global_best.fitness);
+        System.out.println("Best's fitness on the training set " + global_best.fitness);
         System.out.println(GA.print_rules(global_best.rulebase));
         System.out.println(GA.printRulesBitString(global_best.rulebase));
-        System.out.println(csv);
+        System.out.println(csv); // TO use as a list of best per GA
         double percent_training = ((double) 100 / training_set.size()) * global_best.fitness;
 
         GA.score_fitness(global_best, test_set);
         System.out.println("Tested using " + test_set.size() + " pieces of data");
-        System.out.println("Best fitness over test set " + global_best.fitness);
+        System.out.println("Best's fitness over test set " + global_best.fitness);
         System.out.format("Equals %.2f%% accuracy on training set\n", percent_training);
         double percent_test = ((double) 100 / test_set.size()) * global_best.fitness;
         System.out.format("Equals %.2f%% accuracy on test set\n", percent_test);
-
-    }
-
-    public static String file_to_string(String filename) throws FileNotFoundException, IOException {
-        // Read the Data file and create a single String of the contents
-        BufferedReader reader = new BufferedReader(new FileReader(filename));
-        reader.readLine(); // this will read the first line
-        String line1 = null, s = "";
-        while ((line1 = reader.readLine()) != null) { //loop will run from 2nd line
-            for (int i = 0; i < line1.length(); i++) {
-                if ((line1.charAt(i) == '0') || (line1.charAt(i) == '1')) {
-                    s = s + line1.charAt(i);
-                }
-            }
-        }
-        return s;
     }
 
     public static ArrayList<String> file_to_string_array(String filename) throws FileNotFoundException, IOException {
@@ -182,17 +162,4 @@ public class BioAssignment {
         }
         return tempA;
     }
-
-    public static void printFitness(Individual[] array) {
-        //Score the fitness by adding all the '1' in the gene
-        // Print the fitness
-        System.out.println("Fitness");
-        int avFitness = 0;
-        for (int i = 0; i < array.length; i++) {
-            System.out.print(array[i].fitness + " ");
-            avFitness = avFitness + array[i].fitness;
-        }//for i
-        System.out.println("\nTotal of all fitness = " + avFitness + "\nAverage fitness = " + (avFitness / array.length) + "\n");
-    }
-
 }
