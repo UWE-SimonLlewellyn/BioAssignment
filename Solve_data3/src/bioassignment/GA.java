@@ -174,7 +174,7 @@ public class GA {
             }
             original[i].create_rulebase();
         }
-        //  System.out.println("mutes in this population: " + mutes_per_gene);
+//         System.out.println("mutes in this population: " + mutes_per_gene);
         return original;
     }
     
@@ -197,7 +197,7 @@ public class GA {
         }
     }
         
-         public static boolean matches_cond(float[] data, float[] rule) {
+    public static boolean matches_cond(float[] data, float[] rule) {
         int k = 0;
 
         for (int i = 0; i < data.length; i++) {
