@@ -33,75 +33,65 @@ public class BioAssignment {
         int ConL = data_set.get(0).Vars; // condition length
         int p_size = 100; // population size - MUST BE AND EVEN NUMBER
         int itteration = 500; // amoutn of generations 
+        int multiGA = 200; // controlls how many differnt GA to run.
         int gene_size = (ConL + 1) * NumR; // size of gene per solution
         double mute_rate = 0.02;//(1 / ((double) gene_size));
-        Individual best = new Individual(gene_size, NumR, ConL); // Store the best solution found
+
+        Individual global_best = new Individual(gene_size, NumR, ConL); // Store the best solution found
         Individual[] population = GA.initiateArray(p_size, gene_size, NumR, ConL);
         Individual[] offspring = GA.initiateArray(p_size, gene_size, NumR, ConL);
 
-        //Created an iniitial population with random genes
-        population = GA.createPopulation(population);
+        int index = 0;
+        while (index < multiGA) { // Start if loop that allow multple GAs to run sequentially 
+            Individual best = new Individual(gene_size, NumR, ConL); // Store the best solution found
+            //Created an iniitial population with random genes
+            population = GA.createPopulation(population);
 
-        for (Individual pop : population) {
-            score_fitness(pop, data_set); // works
-        }
-        printFitness(population);
-
-        int generation = 0;
-        while (generation < itteration) {
-            System.out.println("\n\n-------------------------------------------------");
-
-            // create offspring using tourniment selection
-            offspring = GA.tournment(population);
-            for (Individual pop : offspring) {
-                score_fitness(pop, data_set);
-            }
-            //  System.out.println("Tourn");
-            //   printFitness(offspring);
-
-//            // Perform crossover
-            offspring = GA.crossover(offspring);
-            for (Individual pop : offspring) {
-                score_fitness(pop, data_set);
-            }
-            //  System.out.println("X-over");
-            //   printFitness(offspring);
-
-//          
-            // Perform mutation 
-            offspring = GA.mutation(offspring, mute_rate);
-            for (Individual pop : offspring) {
-                score_fitness(pop, data_set);
-            }
-            //   System.out.println("After Mute");
-            //     printFitness(offspring);
-
-//            // evaluate
-            best = GA.evaluate(offspring, best);
-            
-            for (int i = 0; i < p_size; i++) {
-                population[i] = new Individual(offspring[i]);
-            }
-            // Loop through population and convert genes to the to the rulebases
             for (Individual pop : population) {
-                score_fitness(pop, data_set);
+                score_fitness(pop, data_set); // works
             }
-//
 
-            generation++;
-            System.out.println("Generation: " + generation);
-//            //   printFitness(population);
+            int generation = 0;
+            while (generation < itteration) {
+
+                // create offspring using tourniment selection
+                offspring = GA.tournment(population);
+                for (Individual pop : offspring) {
+                    score_fitness(pop, data_set);
+                }
+
+                // Perform crossover
+                offspring = GA.crossover(offspring);
+                for (Individual pop : offspring) {
+                    score_fitness(pop, data_set);
+                }
+
+                // Perform mutation 
+                offspring = GA.mutation(offspring, mute_rate);
+                for (Individual pop : offspring) {
+                    score_fitness(pop, data_set);
+                }
+
+                // evaluate
+                best = GA.evaluate(offspring, best);
+
+                for (int i = 0; i < p_size; i++) {
+                    population[i] = new Individual(offspring[i]);
+                }
+
+                generation++;
+                csv += best.fitness + ",";
+            }
+            csv += "\n";
             System.out.println("Best fitness is " + best.fitness);
-            csv += best.fitness + ",";
+            index++;
+            //check completed GA's best solution and compare with the previous GA
+            if (best.fitness > global_best.fitness) {
+                global_best = new Individual(best);
+            }
         }
-       String gh = "";
-        for(int i = 0; i<best.gene.length;i++){
-        gh+=best.gene[i];
-        }
-        System.out.println(gh);
-        System.out.println(GA.print_rules(best.rulebase));
+        System.out.println(GA.print_rules(global_best.rulebase));
         System.out.println(csv);
-
     }
 
     public static String file_to_string(String filename) throws FileNotFoundException, IOException {
