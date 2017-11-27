@@ -34,6 +34,7 @@ public class BioAssignment {
         int p_size = 100; // population size - MUST BE AND EVEN NUMBER
         int itteration = 500; // amoutn of generations 
         int multiGA = 200; // controlls how many differnt GA to run.
+        int correct_rules = 0;
         int gene_size = (ConL + 1) * NumR; // size of gene per solution
         double mute_rate = 0.02;//(1 / ((double) gene_size));
 
@@ -84,12 +85,14 @@ public class BioAssignment {
             }
             csv += "\n";
             System.out.println("Best fitness is " + best.fitness);
+            if(best.fitness == 64 ) correct_rules++;
             index++;
             //check completed GA's best solution and compare with the previous GA
             if (best.fitness > global_best.fitness) {
                 global_best = new Individual(best);
             }
         }
+        System.out.println("After " + multiGA + " GAs, " + correct_rules + " correctly identified all" + data_set.size() +" items in the data set.");
         System.out.println(GA.print_rules(global_best.rulebase));
         System.out.println(csv);
     }
