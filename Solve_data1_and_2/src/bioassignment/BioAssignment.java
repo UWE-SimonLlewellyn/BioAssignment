@@ -36,7 +36,7 @@ public class BioAssignment {
         int multiGA = 200; // controlls how many differnt GA to run.
         int correct_rules = 0;
         int gene_size = (ConL + 1) * NumR; // size of gene per solution
-        double mute_rate = 0.02;//(1 / ((double) gene_size));
+        double mute_rate = 0.02; // Equal to 2% chance of mutation
 
         Individual global_best = new Individual(gene_size, NumR, ConL); // Store the best solution found
         Individual[] population = GA.initiateArray(p_size, gene_size, NumR, ConL);
@@ -92,7 +92,7 @@ public class BioAssignment {
                 global_best = new Individual(best);
             }
         }
-        System.out.println("After " + multiGA + " GAs, " + correct_rules + " correctly identified all" + data_set.size() +" items in the data set.");
+        System.out.println("After " + multiGA + " GAs, " + correct_rules + " correctly identified all " + data_set.size() +" items in the data set.");
         System.out.println(GA.print_rules(global_best.rulebase));
         System.out.println(csv);
     }

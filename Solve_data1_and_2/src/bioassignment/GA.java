@@ -35,7 +35,7 @@ public class GA {
         for (Individual a : array) {
             for (int j = 0; j < a.gene.length; j++) {
                 ArrayList<String> operators = new ArrayList(Arrays.asList("0", "1", "#"));
-                a.gene[j] = operators.get(new Random().nextInt(2));
+                a.gene[j] = operators.get(new Random().nextInt(3));
             } // for j              
             a.create_rulebase(); // Loop through population and convert genes to the to the rulebases 
         } //for i        
