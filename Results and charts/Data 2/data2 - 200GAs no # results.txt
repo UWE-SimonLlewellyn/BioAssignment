@@ -1,0 +1,8 @@
+
+After 200 GAs, 33 correctly identified all 64 items in the data set.
+Global best fitness is 64
+Rule 1: 110### = 0
+Rule 2: 00###0 = 0
+Rule 3: 01##0# = 0
+Rule 4: 10#0## = 0
+Rule 5: ###### = 1

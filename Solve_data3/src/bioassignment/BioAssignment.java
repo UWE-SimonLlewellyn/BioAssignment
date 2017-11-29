@@ -42,11 +42,11 @@ public class BioAssignment {
         }
 
         // Settings for running the GA 
-        int NumR = 5; // number of rules
+        int NumR = 10; // number of rules
         int ConL = data_set.get(0).Vars * 2; // condition length = each conditon from that data set need two values to indicate a range
         int p_size = 100; // population size - MUST BE A EVEN NUMBER
         int itteration = 1000; // amoutn of generations 
-        int multiGA = 1000; // controlls how many differnt GA to run.
+        int multiGA = 100; // controlls how many differnt GA to run.
         int gene_size = (ConL + 1) * NumR; // size of gene per solution
         double mute_rate = 0.02;//(1 / ((double) gene_size*2));
         float mute_size = (float) 0.1;

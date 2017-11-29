@@ -33,7 +33,7 @@ public class BioAssignment {
         int ConL = data_set.get(0).Vars; // condition length
         int p_size = 100; // population size - MUST BE AND EVEN NUMBER
         int itteration = 500; // amoutn of generations 
-        int multiGA = 200; // controlls how many differnt GA to run.
+        int multiGA = 100; // controlls how many differnt GA to run.
         int correct_rules = 0;
         int gene_size = (ConL + 1) * NumR; // size of gene per solution
         double mute_rate = 0.02; // Equal to 2% chance of mutation
@@ -49,7 +49,7 @@ public class BioAssignment {
             population = GA.createPopulation(population);
 
             for (Individual pop : population) {
-                score_fitness(pop, data_set); // works
+                GA.score_fitness(pop, data_set); // works
             }
 
             int generation = 0;
@@ -58,19 +58,19 @@ public class BioAssignment {
                 // create offspring using tourniment selection
                 offspring = GA.tournment(population);
                 for (Individual pop : offspring) {
-                    score_fitness(pop, data_set);
+                    GA.score_fitness(pop, data_set);
                 }
 
                 // Perform crossover
                 offspring = GA.crossover(offspring);
                 for (Individual pop : offspring) {
-                    score_fitness(pop, data_set);
+                    GA.score_fitness(pop, data_set);
                 }
 
                 // Perform mutation 
                 offspring = GA.mutation(offspring, mute_rate);
                 for (Individual pop : offspring) {
-                    score_fitness(pop, data_set);
+                    GA.score_fitness(pop, data_set);
                 }
 
                 // evaluate
@@ -84,7 +84,7 @@ public class BioAssignment {
                 csv += best.fitness + ",";
             }
             csv += "\n";
-            System.out.println("Best fitness is " + best.fitness);
+          //  System.out.println("Best fitness is " + best.fitness);
             if(best.fitness == 64 ) correct_rules++;
             index++;
             //check completed GA's best solution and compare with the previous GA
@@ -97,20 +97,6 @@ public class BioAssignment {
         System.out.println(csv);
     }
 
-    public static String file_to_string(String filename) throws FileNotFoundException, IOException {
-        // Read the Data file and create a single String of the contents
-        BufferedReader reader = new BufferedReader(new FileReader(filename));
-        reader.readLine(); // this will read the first line
-        String line1 = null, s = "";
-        while ((line1 = reader.readLine()) != null) { //loop will run from 2nd line
-            for (int i = 0; i < line1.length(); i++) {
-                if ((line1.charAt(i) == '0') || (line1.charAt(i) == '1')) {
-                    s = s + line1.charAt(i);
-                }
-            }
-        }
-        return s;
-    }
 
     public static ArrayList<String> file_to_string_array(String filename) throws FileNotFoundException, IOException {
         ArrayList<String> array = new ArrayList<>();
@@ -148,42 +134,9 @@ public class BioAssignment {
         return tempA;
     }
 
-    public static boolean matches_cond(int[] data, String[] rule) {
-        for (int i = 0; i < data.length; i++) {
-            String s = "" + data[i];  // Changing int[] to String[]
-            if ((rule[i].equals(s) != true) && (rule[i].equals("#") != true)) {
-                return false;
-            }
-        }
-        return true;
-    }
 
-    public static void printFitness(Individual[] array) {
-        //Score the fitness by adding all the '1' in the gene
-        // Print the fitness
-        System.out.println("Fitness");
-        int avFitness = 0;
-        for (int i = 0; i < array.length; i++) {
-            System.out.print(array[i].fitness + " ");
-            avFitness = avFitness + array[i].fitness;
-        }//for i
-        System.out.println("\nTotal of all fitness = " + avFitness + "\nAverage fitness = " + (avFitness / array.length) + "\n");
-    }
 
-    public static void score_fitness(Individual solution, ArrayList<Data> data) {
+   
 
-        solution.fitness = 0;
-        for (int i = 0; i < data.size(); i++) {
-            for (Rule rulebase : solution.rulebase) {
-                if (matches_cond(data.get(i).variables, rulebase.cond) == true) {
-                    String s = "" + data.get(i).type;
-                    if (rulebase.out.equals(s) == true) {
-                        solution.fitness++;
-                    }
-                    break; // note it is important to get the next data item after a match
-                }
-            }
-        }
-    }
 
 }

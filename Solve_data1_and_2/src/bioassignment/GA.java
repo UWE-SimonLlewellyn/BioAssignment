@@ -32,10 +32,11 @@ public class GA {
         // Create a new array of population 
         // Set the gene size to of each in the population
         // populate each gene with 1 and 0
+        // or can be seeded with # (wild card) as well. 
         for (Individual a : array) {
             for (int j = 0; j < a.gene.length; j++) {
                 ArrayList<String> operators = new ArrayList(Arrays.asList("0", "1", "#"));
-                a.gene[j] = operators.get(new Random().nextInt(3));
+                a.gene[j] = operators.get(new Random().nextInt(2)); //nextInt(2) = {0, 1}, nextInt(3) = {0, 1, #}
             } // for j              
             a.create_rulebase(); // Loop through population and convert genes to the to the rulebases 
         } //for i        
@@ -159,6 +160,32 @@ public class GA {
             count++;
         }
         return s;
+    }
+    
+        public static boolean matches_cond(int[] data, String[] rule) {
+        for (int i = 0; i < data.length; i++) {
+            String s = "" + data[i];  // Changing int[] to String[]
+            if ((rule[i].equals(s) != true) && (rule[i].equals("#") != true)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    public static void score_fitness(Individual solution, ArrayList<Data> data) {
+
+        solution.fitness = 0;
+        for (int i = 0; i < data.size(); i++) {
+            for (Rule rulebase : solution.rulebase) {
+                if (matches_cond(data.get(i).variables, rulebase.cond) == true) {
+                    String s = "" + data.get(i).type;
+                    if (rulebase.out.equals(s) == true) {
+                        solution.fitness++;
+                    }
+                    break; // note it is important to get the next data item after a match
+                }
+            }
+        }
     }
 
 }
