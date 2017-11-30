@@ -1,0 +1,18 @@
+Trained using 1501 sets of data
+Best's fitness on the training set 1501
+Rule 1: (0.0 , 0.5)  (0.5 , 0.0)  (1.0 , 0.0)  (0.0 , 1.0)  (0.0 , 1.0)  (0.0 , 0.5)   = 0
+Rule 2: (0.5 , 1.0)  (1.0 , 0.0)  (0.5 , 0.0)  (1.0 , 0.0)  (0.0 , 1.0)  (0.0 , 0.5)   = 0
+Rule 3: (0.0 , 0.5)  (1.0 , 0.0)  (1.0 , 0.0)  (0.5 , 0.0)  (0.0 , 1.0)  (0.5 , 1.0)   = 0
+Rule 4: (1.0 , 0.5)  (1.0 , 0.0)  (1.0 , 0.0)  (0.0 , 1.0)  (0.5 , 0.0)  (0.5 , 1.0)   = 0
+Rule 5: (1.0 , 0.0)  (0.0 , 1.0)  (0.0 , 1.0)  (1.0 , 0.0)  (0.0 , 1.0)  (0.0 , 1.0)   = 1
+
+Rule 1: 00###0 = 0
+Rule 2: 1#0##0 = 0
+Rule 3: 0##0#1 = 0
+Rule 4: 1###01 = 0
+Rule 5: ###### = 1
+
+Tested using 499 pieces of data
+Best's fitness over test set 499
+Equals 100.00% accuracy on training set
+Equals 100.00% accuracy on test set
